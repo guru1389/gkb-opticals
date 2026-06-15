@@ -10,6 +10,7 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --font-avenir: var(--font-avenir-local);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -23,4 +24,112 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+.custom-bullet {
+  width: 14px;
+  height: 14px;
+  background: white;
+  opacity: 0.5;
+  border-radius: 999px;
+  transition: all 0.3s ease;
+}
+
+.swiper-pagination-bullet-active.custom-bullet {
+    opacity: 1;
+    background: #fff;
+    width: 80px;
+    height: 12px;
+    border-radius: 16px;
+}
+
+
+.campaign-swiper {
+  overflow: visible;
+}
+
+.campaign-swiper .swiper-pagination {
+  bottom: 20px !important;
+}
+
+.campaign-swiper .custom-bullet {
+  width: 14px;
+  height: 14px;
+  background: white;
+  opacity: 0.5;
+  border-radius: 999px;
+  margin: 0 6px !important;
+  transition: all 0.3s ease;
+}
+
+.campaign-swiper .swiper-pagination-bullet-active.custom-bullet {
+  width: 80px;
+  opacity: 1;
+  background: white;
+}
+
+
+.category-swiper .swiper-button-next,
+.category-swiper .swiper-button-prev {
+  width: 34px;
+  height: 34px;
+  background: white;
+  border-radius: 999px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  color: black;
+}
+
+.category-swiper .swiper-button-next::after,
+.category-swiper .swiper-button-prev::after {
+  font-size: 8px;
+  font-weight: 900;
+}
+
+.category-swiper :is(.swiper-button-prev, 
+.category-swiper .swiper-button-next) ::slotted(svg),
+.category-swiper :is(.swiper-button-prev,
+.category-swiper .swiper-button-next) svg{
+    width: 30%;
+}
+
+.fashion-swiper {
+  overflow: visible;
+}
+
+.fashion-swiper .swiper-slide {
+  transition: transform 0.3s ease;
+}
+
+.brand-campaign-swiper .swiper-pagination {
+  bottom: 20px !important;
+}
+
+.brand-campaign-swiper .campaign-line {
+  width: 80px !important;
+  height: 4px !important;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.4);
+  display: inline-block;
+  margin: 0 6px;
+}
+
+.brand-campaign-swiper .swiper-pagination-bullet-active {
+  background: #000 !important;
+}
+
+.campaignSwiper .swiper-pagination-bullet, 
+.brand-campaign-swiper .swiper-pagination-bullet
+ {
+    opacity: 1;
+    background-color: #ffffff59;
+    border-radius: 9999px;
+    width: 32px;
+    height: 4px;
+    transition: all .4s;
+}
+
+.brand-campaign-swiper .swiper-pagination-bullet-active {
+    background-color: #000;
+    width: 182px;
+    height: 6px;
 }
