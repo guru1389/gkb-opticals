@@ -3,6 +3,7 @@
 import { useState } from "react";
 
 import Image from "next/image";
+import Link from "next/link";
 
 import {
   Heart,
@@ -11,6 +12,7 @@ import {
 } from "lucide-react";
 
 type ProductCardProps = {
+  slug: string;
   name: string;
   price: string;
   image: string;
@@ -18,6 +20,7 @@ type ProductCardProps = {
 };
 
 export default function ProductCard({
+  slug,
   name,
   price,
   image,
@@ -28,7 +31,7 @@ export default function ProductCard({
     useState(colors?.[0] || "");
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-100/60 hover:shadow-xl transition-all duration-400 overflow-hidden group hover:-translate-y-0.5 cursor-pointer">
+    <Link href={`/product/${slug}`} className="block bg-white rounded-2xl border border-gray-100/60 hover:shadow-xl transition-all duration-400 overflow-hidden group hover:-translate-y-0.5 cursor-pointer">
 
       {/* Product Image */}
       <div className="relative h-[320px]">
@@ -128,6 +131,6 @@ export default function ProductCard({
 
       </div>
 
-    </div>
+    </Link>
   );
 }

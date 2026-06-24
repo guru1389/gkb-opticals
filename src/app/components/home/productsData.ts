@@ -1,6 +1,7 @@
 export const bestSellers = [
   {
     id: 1,
+    slug: "maui-jim-sunglasses",
     name: "Maui Jim Sunglasses",
     price: "₹ 14,690",
     image:
@@ -11,6 +12,7 @@ export const bestSellers = [
 export const newArrivals = [
   {
     id: 4,
+    slug: "rayban-aviator",
     name: "RayBan Aviator",
     price: "₹ 18,990",
     image:
@@ -25,6 +27,7 @@ export const newArrivals = [
 export const sunglassesProducts = [
   {
     id: 11,
+    slug: "longines-lg0005-h-sunglass-gold",
     name: "Longines LG0005-H Sunglass Gold Male Metal",
     price: "₹ 41,250",
     image:
@@ -34,6 +37,7 @@ export const sunglassesProducts = [
 
   {
     id: 12,
+    slug: "burberry-obe4438u-sunglass-black",
     name: "Burberry OBE4438U Sunglass Black Male Shell",
     price: "₹ 34,290",
     image:
@@ -43,6 +47,7 @@ export const sunglassesProducts = [
 
   {
     id: 13,
+    slug: "burberry-obe4403-sunglass-brown",
     name: "Burberry OBE4403 Sunglass Brown Male Shell",
     price: "₹ 22,590",
     image:
@@ -54,6 +59,7 @@ export const sunglassesProducts = [
 export const eyeglassesProducts = [
   {
     id: 14,
+    slug: "tom-ford-eyeglass-transparent-grey",
     name: "Tom Ford Eyeglass Transparent Grey",
     price: "₹ 18,900",
     image:
@@ -63,6 +69,7 @@ export const eyeglassesProducts = [
 
   {
     id: 15,
+    slug: "prada-optical-vision",
     name: "Prada Optical Vision",
     price: "₹ 24,990",
     image:
