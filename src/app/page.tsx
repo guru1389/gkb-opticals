@@ -7,6 +7,7 @@ import FashionCollection from "./components/home/FashionCollection";
 import ProductTabs from "./components/home/ProductTabs";
 import Brandcampaignslider from "./components/home/brandcampaign/BrandCampaignSlider";
 import SeasonalEdit from "./components/home/seasonal-edit/SeasonalEdit";
+import Countries from "./components/home/Countries";
 
 
 
@@ -23,6 +24,7 @@ export default function Home() {
       <ProductTabs />
       <Brandcampaignslider />
       <SeasonalEdit />
+      <Countries />
      
     </main>
   );

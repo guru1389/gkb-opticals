@@ -1,4 +1,5 @@
 import { Search, ShoppingBag, User } from "lucide-react";
+import Link from "next/link";
 
 export default function Navbar() {
   return (
@@ -12,12 +13,14 @@ export default function Navbar() {
 
         {/* Menu */}
         <ul className="hidden md:flex gap-10 text-lg">
-          <li>Spectacles</li>
-          <li>Contacts</li>
-          <li>Accessories</li>
-          <li>Brands</li>
-          <li>About</li>
-          <li className="text-orange-500">Sale</li>
+          <li><Link href="/">Home</Link></li>
+          <li><Link href="/eyewear/eyeglasses/men">Men Eyeglasses</Link></li>
+          <li><Link href="/spectacles">Spectacles</Link></li>
+          <li><Link href="/contacts">Contacts</Link></li>
+          <li><Link href="/accessories">Accessories</Link></li>
+          <li><Link href="/brands">Brands</Link></li>
+          <li><Link href="/about">About</Link></li>
+          <li className="text-orange-500"><Link href="/sale">Sale</Link></li>
         </ul>
 
         {/* Icons */}

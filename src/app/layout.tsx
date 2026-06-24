@@ -3,6 +3,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
 
+import Providers from "./providers";
+
 import Header from "./components/layout/Header";
 import Footer from "./components/layout/footer/Footer";
 
@@ -56,8 +58,13 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col">
 
         <Header />
-        
-        {children}
+
+          <Providers>
+
+              {children}
+              
+          </Providers>
+       
         
         <Footer />
 

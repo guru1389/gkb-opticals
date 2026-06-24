@@ -1,484 +1,348 @@
 "use client";
 
-import Image from "next/image";
+import { useState } from "react";
 import {
+  Phone,
+  ShieldCheck,
+  ChevronLeft,
   Check,
   CreditCard,
   Landmark,
-  MapPin,
   PackageCheck,
   Smartphone,
-  Truck,
 } from "lucide-react";
-import { useState } from "react";
 
-type CheckoutStep = "shipping" | "payment" | "confirmation";
-type ShippingTab = "delivery" | "pickup";
-type PaymentTab = "card" | "upi" | "netbanking" | "cod";
+type Step = "guest" | "shipping" | "payment" | "confirmation";
+type PaymentMethod = "card" | "upi" | "netbanking" | "cod";
 
-const steps: {
-  id: CheckoutStep;
-  label: string;
-}[] = [
-  {
-    id: "shipping",
-    label: "Shipping information",
-  },
-  {
-    id: "payment",
-    label: "Payment",
-  },
-  {
-    id: "confirmation",
-    label: "Order confirmation",
-  },
+const STEP_ORDER: Step[] = ["guest", "shipping", "payment", "confirmation"];
+
+const STEPPER_STEPS = [
+  { id: "shipping", label: "Shipping information" },
+  { id: "payment", label: "Payment details" },
+  { id: "confirmation", label: "Order confirmation" },
 ];
 
-const orderItems = [
-  {
-    id: "longines-lg0005",
-    name: "Longines LG0005-H Sunglass Gold",
-    price: "₹43,250",
-    image: "/images/cart/LO5GL59.webp",
-  },
-  {
-    id: "paul-vosheront-pv603",
-    name: "PAUL VOSHERONT PV603 Frame Gold",
-    price: "₹12,500",
-    image: "/images/products/KCA.webp",
-  },
-  {
-    id: "paul-vosheront-pv3635f",
-    name: "PAUL VOSHERONT PV3635F Frame Black",
-    price: "₹12,500",
-    image: "/images/products/KCA1.webp",
-  },
+const PAYMENT_METHODS = [
+  { id: "card" as const, label: "Card", Icon: CreditCard },
+  { id: "upi" as const, label: "UPI", Icon: Smartphone },
+  { id: "netbanking" as const, label: "Net banking", Icon: Landmark },
+  { id: "cod" as const, label: "Cash on delivery", Icon: PackageCheck },
 ];
 
-const paymentTabs: {
-  id: PaymentTab;
-  label: string;
-  icon: React.ElementType;
-}[] = [
-  {
-    id: "card",
-    label: "Card",
-    icon: CreditCard,
-  },
-  {
-    id: "upi",
-    label: "UPI",
-    icon: Smartphone,
-  },
-  {
-    id: "netbanking",
-    label: "Net banking",
-    icon: Landmark,
-  },
-  {
-    id: "cod",
-    label: "Cash on delivery",
-    icon: PackageCheck,
-  },
-];
+const pillInput =
+  "w-full h-[50px] rounded-full border border-neutral-300 bg-white px-5 text-[14px] text-neutral-700 outline-none focus:border-neutral-600 placeholder:text-neutral-400 transition-colors";
 
-const inputClassName =
-  "h-[54px] rounded-full border border-neutral-300 bg-white px-5 text-[15px] outline-none transition focus:border-black";
+const darkBtn =
+  "w-full h-[50px] rounded-full bg-[#4d4d4d] text-white text-[13px] font-medium tracking-wide hover:bg-[#333] transition-colors";
+
+function Stepper({ current }: { current: Step }) {
+  const activeIndex =
+    current === "guest"
+      ? -1
+      : STEPPER_STEPS.findIndex((s) => s.id === current);
+
+  return (
+    <div className="border-b border-neutral-200 bg-white">
+      <div className="mx-auto flex max-w-[900px] items-start justify-between px-6 py-6">
+        {STEPPER_STEPS.map((s, i) => {
+          const isDone = activeIndex > i;
+          const isActive = activeIndex === i;
+
+          return (
+            <div key={s.id} className="flex flex-1 flex-col items-center">
+              <div className="relative flex w-full items-center">
+                {i > 0 && (
+                  <div
+                    className={`h-px flex-1 ${isDone || isActive ? "bg-neutral-400" : "bg-neutral-300"}`}
+                  />
+                )}
+                <div
+                  className={`h-3 w-3 shrink-0 rounded-full border ${
+                    isActive || isDone
+                      ? "border-neutral-600 bg-neutral-600"
+                      : "border-neutral-400 bg-transparent"
+                  }`}
+                />
+                {i < STEPPER_STEPS.length - 1 && (
+                  <div
+                    className={`h-px flex-1 ${isDone ? "bg-neutral-400" : "bg-neutral-300"}`}
+                  />
+                )}
+              </div>
+              <span className="mt-2 text-center text-[11px] text-neutral-500">
+                {s.label}
+              </span>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+function OrderSummary() {
+  return (
+    <aside className="bg-white p-6 lg:sticky lg:top-4">
+      <div className="mb-4 flex items-center justify-between text-[14px]">
+        <span className="text-neutral-600">Item totals (1 item)</span>
+        <span className="font-medium">₹4,920</span>
+      </div>
+
+      <hr className="border-neutral-200" />
+
+      <div className="mb-6 mt-4 flex items-center justify-between">
+        <span className="text-[15px] font-bold">Grand total</span>
+        <span className="text-[15px] font-bold">₹4,920</span>
+      </div>
+
+      <hr className="border-neutral-200" />
+
+      <div className="mt-6 flex justify-around">
+        <div className="flex flex-col items-center gap-2">
+          <Phone size={22} className="text-neutral-500" strokeWidth={1.5} />
+          <span className="text-[12px] text-neutral-500">Expert callback</span>
+        </div>
+        <div className="flex flex-col items-center gap-2">
+          <ShieldCheck size={22} className="text-neutral-500" strokeWidth={1.5} />
+          <span className="text-[12px] text-neutral-500">1-year warranty</span>
+        </div>
+      </div>
+    </aside>
+  );
+}
 
 export default function CheckoutFlow() {
-  const [activeStep, setActiveStep] = useState<CheckoutStep>("shipping");
-  const [shippingTab, setShippingTab] = useState<ShippingTab>("delivery");
-  const [paymentTab, setPaymentTab] = useState<PaymentTab>("card");
+  const [step, setStep] = useState<Step>("guest");
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("card");
 
-  const goToPayment = () => {
-    setActiveStep("payment");
+  const goBack = () => {
+    const idx = STEP_ORDER.indexOf(step);
+    if (idx > 0) setStep(STEP_ORDER[idx - 1]);
   };
 
-  const placeOrder = () => {
-    setActiveStep("confirmation");
+  const goNext = () => {
+    const idx = STEP_ORDER.indexOf(step);
+    if (idx < STEP_ORDER.length - 1) setStep(STEP_ORDER[idx + 1]);
   };
 
   return (
-    <main className="bg-[#f7f7f7]">
-      <div className="mx-auto max-w-[1200px] px-6 py-14 lg:px-8 lg:py-20">
-        <div className="mb-10 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-          <div>
-            <p className="mb-3 text-[11px] uppercase tracking-[0.24em] text-neutral-500">
-              Secure checkout
-            </p>
+    <div className="min-h-screen bg-[#f5f5f5]">
+      <Stepper current={step} />
 
-            <h1 className="font-avenir text-[36px] font-light leading-tight text-black lg:text-[52px]">
-              checkout
-            </h1>
-          </div>
+      <div className="mx-auto grid max-w-[1100px] grid-cols-1 gap-5 px-4 py-8 lg:grid-cols-[1fr_320px] lg:items-start">
+        {/* Left Panel */}
+        <div className="bg-white p-8">
+          {/* Guest / Login Step */}
+          {step === "guest" && (
+            <div>
+              <button
+                onClick={() => window.history.back()}
+                className="mb-6 text-neutral-500 hover:text-black"
+              >
+                <ChevronLeft size={22} />
+              </button>
 
-          <div className="grid grid-cols-3 rounded-full border border-neutral-300 bg-white p-1">
-            {steps.map((step, index) => {
-              const isActive = activeStep === step.id;
+              <h2 className="mb-1 text-[20px] font-semibold text-neutral-800">
+                Login or checkout as a guest
+              </h2>
+              <p className="mb-6 text-[13px] text-neutral-500">
+                Enter your details to proceed with the purchase
+              </p>
 
-              return (
-                <button
-                  key={step.id}
-                  type="button"
-                  onClick={() => setActiveStep(step.id)}
-                  className={`
-                    flex
-                    h-[44px]
-                    min-w-0
-                    items-center
-                    justify-center
-                    gap-2
-                    rounded-full
-                    px-4
-                    text-center
-                    text-[13px]
-                    font-medium
-                    transition
-                    ${
-                      isActive
-                        ? "bg-black text-white"
-                        : "text-neutral-500 hover:text-black"
-                    }
-                  `}
-                >
-                  <span className="hidden h-5 w-5 shrink-0 items-center justify-center rounded-full border border-current text-[11px] sm:flex">
-                    {index + 1}
-                  </span>
-                  <span className="truncate">{step.label}</span>
+              <input
+                className={`${pillInput} mb-5`}
+                placeholder="* Email address / Phone number"
+                type="text"
+              />
+
+              <div className="flex flex-col gap-3">
+                <button className={darkBtn} onClick={goNext}>
+                  proceed to checkout
                 </button>
-              );
-            })}
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 gap-10 lg:grid-cols-[minmax(0,1fr)_380px] lg:items-start">
-          <section className="border-t border-neutral-200 bg-white px-6 py-8 lg:px-8">
-            {activeStep === "shipping" && (
-              <div>
-                <div className="mb-8 flex items-center justify-between gap-6">
-                  <div>
-                    <h2 className="text-[26px] font-medium">
-                      Shipping information
-                    </h2>
-                    <p className="mt-2 text-sm text-neutral-500">
-                      Choose delivery or collect from a nearby store.
-                    </p>
-                  </div>
-
-                  <Truck className="hidden text-neutral-400 sm:block" size={28} />
-                </div>
-
-                <div className="mb-8 grid grid-cols-2 rounded-full border border-neutral-300 p-1">
-                  <button
-                    type="button"
-                    onClick={() => setShippingTab("delivery")}
-                    className={`
-                      h-[44px]
-                      rounded-full
-                      text-sm
-                      font-medium
-                      transition
-                      ${
-                        shippingTab === "delivery"
-                          ? "bg-black text-white"
-                          : "text-neutral-500 hover:text-black"
-                      }
-                    `}
-                  >
-                    Home delivery
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => setShippingTab("pickup")}
-                    className={`
-                      h-[44px]
-                      rounded-full
-                      text-sm
-                      font-medium
-                      transition
-                      ${
-                        shippingTab === "pickup"
-                          ? "bg-black text-white"
-                          : "text-neutral-500 hover:text-black"
-                      }
-                    `}
-                  >
-                    Store pickup
-                  </button>
-                </div>
-
-                {shippingTab === "delivery" ? (
-                  <form className="grid grid-cols-1 gap-5 md:grid-cols-2">
-                    <input
-                      className={inputClassName}
-                      placeholder="First name"
-                      type="text"
-                    />
-                    <input
-                      className={inputClassName}
-                      placeholder="Last name"
-                      type="text"
-                    />
-                    <input
-                      className={inputClassName}
-                      placeholder="Email address"
-                      type="email"
-                    />
-                    <input
-                      className={inputClassName}
-                      placeholder="Mobile number"
-                      type="tel"
-                    />
-                    <input
-                      className={`${inputClassName} md:col-span-2`}
-                      placeholder="Address line 1"
-                      type="text"
-                    />
-                    <input
-                      className={inputClassName}
-                      placeholder="City"
-                      type="text"
-                    />
-                    <input
-                      className={inputClassName}
-                      placeholder="PIN code"
-                      type="text"
-                    />
-                  </form>
-                ) : (
-                  <div className="space-y-4">
-                    {["Park Street, Kolkata", "Indiranagar, Bengaluru"].map(
-                      (store) => (
-                        <button
-                          key={store}
-                          type="button"
-                          className="flex w-full items-center gap-4 rounded-full border border-neutral-300 bg-white px-5 py-4 text-left transition hover:border-black"
-                        >
-                          <MapPin size={18} />
-                          <span className="font-medium">{store}</span>
-                        </button>
-                      )
-                    )}
-                  </div>
-                )}
-
-                <button
-                  type="button"
-                  onClick={goToPayment}
-                  className="mt-8 h-[54px] rounded-full bg-black px-10 font-medium text-white transition hover:bg-neutral-800"
-                >
-                  continue to payment
+                <button className={darkBtn} onClick={() => setStep("shipping")}>
+                  proceed as guest
                 </button>
               </div>
-            )}
+            </div>
+          )}
 
-            {activeStep === "payment" && (
-              <div>
-                <div className="mb-8">
-                  <h2 className="text-[26px] font-medium">Payment</h2>
-                  <p className="mt-2 text-sm text-neutral-500">
-                    Select a payment method and complete your order.
-                  </p>
-                </div>
+          {/* Shipping Step */}
+          {step === "shipping" && (
+            <div>
+              <button
+                onClick={goBack}
+                className="mb-6 text-neutral-500 hover:text-black"
+              >
+                <ChevronLeft size={22} />
+              </button>
 
-                <div className="mb-8 grid grid-cols-2 gap-3 lg:grid-cols-4">
-                  {paymentTabs.map((tab) => {
-                    const Icon = tab.icon;
+              <h2 className="mb-6 text-[20px] font-semibold text-neutral-800">
+                Shipping information
+              </h2>
 
-                    return (
-                      <button
-                        key={tab.id}
-                        type="button"
-                        onClick={() => setPaymentTab(tab.id)}
-                        className={`
-                          flex
-                          h-[72px]
-                          flex-col
-                          items-center
-                          justify-center
-                          gap-2
-                          rounded-[8px]
-                          border
-                          text-sm
-                          transition
-                          ${
-                            paymentTab === tab.id
-                              ? "border-black bg-black text-white"
-                              : "border-neutral-300 bg-white text-neutral-600 hover:border-black hover:text-black"
-                          }
-                        `}
-                      >
-                        <Icon size={18} />
-                        <span>{tab.label}</span>
-                      </button>
-                    );
-                  })}
-                </div>
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                <input className={pillInput} placeholder="First name" type="text" />
+                <input className={pillInput} placeholder="Last name" type="text" />
+                <input
+                  className={pillInput}
+                  placeholder="Email address"
+                  type="email"
+                />
+                <input
+                  className={pillInput}
+                  placeholder="Mobile number"
+                  type="tel"
+                />
+                <input
+                  className={`${pillInput} md:col-span-2`}
+                  placeholder="Address line 1"
+                  type="text"
+                />
+                <input className={pillInput} placeholder="City" type="text" />
+                <input className={pillInput} placeholder="PIN code" type="text" />
+              </div>
 
-                {paymentTab === "card" && (
-                  <form className="grid grid-cols-1 gap-5 md:grid-cols-2">
-                    <input
-                      className={`${inputClassName} md:col-span-2`}
-                      placeholder="Card number"
-                      type="text"
-                    />
-                    <input
-                      className={inputClassName}
-                      placeholder="MM / YY"
-                      type="text"
-                    />
-                    <input
-                      className={inputClassName}
-                      placeholder="CVV"
-                      type="password"
-                    />
-                    <input
-                      className={`${inputClassName} md:col-span-2`}
-                      placeholder="Name on card"
-                      type="text"
-                    />
-                  </form>
-                )}
+              <button className={`${darkBtn} mt-6`} onClick={goNext}>
+                continue to payment
+              </button>
+            </div>
+          )}
 
-                {paymentTab === "upi" && (
+          {/* Payment Step */}
+          {step === "payment" && (
+            <div>
+              <button
+                onClick={goBack}
+                className="mb-6 text-neutral-500 hover:text-black"
+              >
+                <ChevronLeft size={22} />
+              </button>
+
+              <h2 className="mb-6 text-[20px] font-semibold text-neutral-800">
+                Payment details
+              </h2>
+
+              {/* Payment method tabs */}
+              <div className="mb-6 grid grid-cols-2 gap-3 md:grid-cols-4">
+                {PAYMENT_METHODS.map(({ id, label, Icon }) => (
+                  <button
+                    key={id}
+                    onClick={() => setPaymentMethod(id)}
+                    className={`flex h-[72px] flex-col items-center justify-center gap-2 rounded border text-[12px] transition-colors ${
+                      paymentMethod === id
+                        ? "border-neutral-700 bg-neutral-700 text-white"
+                        : "border-neutral-300 text-neutral-600 hover:border-neutral-500"
+                    }`}
+                  >
+                    <Icon size={18} strokeWidth={1.5} />
+                    <span>{label}</span>
+                  </button>
+                ))}
+              </div>
+
+              {paymentMethod === "card" && (
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                   <input
-                    className={`${inputClassName} w-full`}
-                    placeholder="Enter UPI ID"
+                    className={`${pillInput} md:col-span-2`}
+                    placeholder="Card number"
+                    type="text"
+                    maxLength={19}
+                  />
+                  <input className={pillInput} placeholder="MM / YY" type="text" />
+                  <input
+                    className={pillInput}
+                    placeholder="CVV"
+                    type="password"
+                    maxLength={4}
+                  />
+                  <input
+                    className={`${pillInput} md:col-span-2`}
+                    placeholder="Name on card"
                     type="text"
                   />
-                )}
-
-                {paymentTab === "netbanking" && (
-                  <select className={`${inputClassName} w-full`}>
-                    <option>Select bank</option>
-                    <option>HDFC Bank</option>
-                    <option>ICICI Bank</option>
-                    <option>State Bank of India</option>
-                    <option>Axis Bank</option>
-                  </select>
-                )}
-
-                {paymentTab === "cod" && (
-                  <div className="rounded-[8px] border border-neutral-300 bg-white p-5 text-sm text-neutral-600">
-                    Pay by cash when your order is delivered.
-                  </div>
-                )}
-
-                <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                  <button
-                    type="button"
-                    onClick={() => setActiveStep("shipping")}
-                    className="h-[54px] rounded-full border border-black px-10 font-medium transition hover:bg-black hover:text-white"
-                  >
-                    back
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={placeOrder}
-                    className="h-[54px] rounded-full bg-black px-10 font-medium text-white transition hover:bg-neutral-800"
-                  >
-                    place order
-                  </button>
                 </div>
-              </div>
-            )}
+              )}
 
-            {activeStep === "confirmation" && (
-              <div className="py-10 text-center">
-                <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-black text-white">
-                  <Check size={28} />
+              {paymentMethod === "upi" && (
+                <input
+                  className={pillInput}
+                  placeholder="Enter UPI ID (e.g. name@upi)"
+                  type="text"
+                />
+              )}
+
+              {paymentMethod === "netbanking" && (
+                <select className={pillInput}>
+                  <option value="">Select your bank</option>
+                  <option>HDFC Bank</option>
+                  <option>ICICI Bank</option>
+                  <option>State Bank of India</option>
+                  <option>Axis Bank</option>
+                  <option>Kotak Mahindra Bank</option>
+                </select>
+              )}
+
+              {paymentMethod === "cod" && (
+                <div className="rounded-full border border-neutral-300 px-6 py-4 text-[13px] text-neutral-600">
+                  Pay by cash when your order is delivered.
                 </div>
+              )}
 
-                <p className="mb-3 text-[11px] uppercase tracking-[0.24em] text-neutral-500">
-                  Order confirmed
-                </p>
-
-                <h2 className="mx-auto max-w-[520px] text-[34px] font-light leading-tight">
-                  Thank you, your order has been placed.
-                </h2>
-
-                <p className="mx-auto mt-5 max-w-[520px] text-neutral-600">
-                  We have sent the confirmation details to your email. Your
-                  estimated delivery window is 5-7 business days.
-                </p>
-
-                <div className="mx-auto mt-8 grid max-w-[560px] grid-cols-1 gap-4 text-left sm:grid-cols-3">
-                  <div className="border-t border-neutral-200 pt-4">
-                    <p className="text-xs uppercase tracking-[0.18em] text-neutral-400">
-                      Order ID
-                    </p>
-                    <p className="mt-2 font-medium">GKB-24051</p>
-                  </div>
-
-                  <div className="border-t border-neutral-200 pt-4">
-                    <p className="text-xs uppercase tracking-[0.18em] text-neutral-400">
-                      Payment
-                    </p>
-                    <p className="mt-2 font-medium">Confirmed</p>
-                  </div>
-
-                  <div className="border-t border-neutral-200 pt-4">
-                    <p className="text-xs uppercase tracking-[0.18em] text-neutral-400">
-                      Total
-                    </p>
-                    <p className="mt-2 font-medium">₹68,250</p>
-                  </div>
-                </div>
-              </div>
-            )}
-          </section>
-
-          <aside className="border-t border-neutral-200 bg-white px-6 py-8 lg:sticky lg:top-[120px]">
-            <h2 className="mb-6 text-[24px] font-medium">Order summary</h2>
-
-            <div className="space-y-5">
-              {orderItems.map((item) => (
-                <div key={item.id} className="flex gap-4">
-                  <Image
-                    src={item.image}
-                    alt={item.name}
-                    width={72}
-                    height={72}
-                    sizes="72px"
-                    className="h-[72px] w-[72px] shrink-0 object-contain"
-                  />
-
-                  <div className="min-w-0 flex-1">
-                    <p className="text-sm font-medium leading-5">{item.name}</p>
-                    <p className="mt-2 text-sm text-neutral-500">Qty 1</p>
-                  </div>
-
-                  <p className="text-sm font-medium">{item.price}</p>
-                </div>
-              ))}
+              <button className={`${darkBtn} mt-6`} onClick={goNext}>
+                place order
+              </button>
             </div>
+          )}
 
-            <div className="mt-8 space-y-4 border-t border-neutral-200 pt-6 text-sm">
-              <div className="flex justify-between">
-                <span className="text-neutral-500">Item total</span>
-                <span className="font-medium">₹68,250</span>
+          {/* Confirmation Step */}
+          {step === "confirmation" && (
+            <div className="py-10 text-center">
+              <div className="mx-auto mb-6 flex h-14 w-14 items-center justify-center rounded-full bg-black text-white">
+                <Check size={24} />
               </div>
 
-              <div className="flex justify-between">
-                <span className="text-neutral-500">Shipping</span>
-                <span className="font-medium">Free</span>
+              <p className="mb-3 text-[11px] uppercase tracking-widest text-neutral-400">
+                Order confirmed
+              </p>
+
+              <h2 className="mx-auto max-w-[420px] text-[28px] font-light leading-snug text-neutral-800">
+                Thank you, your order has been placed.
+              </h2>
+
+              <p className="mx-auto mt-4 max-w-[400px] text-[13px] text-neutral-500">
+                We&apos;ve sent the confirmation details to your email. Estimated
+                delivery: 5–7 business days.
+              </p>
+
+              <div className="mx-auto mt-8 grid max-w-[480px] grid-cols-3 gap-4 text-left">
+                {[
+                  { label: "Order ID", value: "GKB-24051" },
+                  { label: "Payment", value: "Confirmed" },
+                  { label: "Total", value: "₹4,920" },
+                ].map(({ label, value }) => (
+                  <div key={label} className="border-t border-neutral-200 pt-4">
+                    <p className="text-[11px] uppercase tracking-wider text-neutral-400">
+                      {label}
+                    </p>
+                    <p className="mt-2 text-[14px] font-medium">{value}</p>
+                  </div>
+                ))}
               </div>
 
-              <div className="flex justify-between">
-                <span className="text-neutral-500">Taxes</span>
-                <span className="font-medium">Included</span>
-              </div>
+              <button
+                className="mt-10 h-[50px] rounded-full bg-black px-10 text-[13px] font-medium text-white transition-colors hover:bg-neutral-800"
+                onClick={() => setStep("guest")}
+              >
+                continue shopping
+              </button>
             </div>
-
-            <div className="mt-6 flex justify-between border-t border-neutral-200 pt-6 text-[20px] font-semibold">
-              <span>Grand total</span>
-              <span>₹68,250</span>
-            </div>
-          </aside>
+          )}
         </div>
+
+        {/* Right Panel */}
+        <OrderSummary />
       </div>
-    </main>
+    </div>
   );
 }
